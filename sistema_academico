@@ -1,0 +1,150 @@
+alunos = {}
+
+
+def add_aluno():
+    nome = input("Digite o nome do aluno: ")
+    alunos[nome] = [0, 0, "", 0, 0, 0, 0, 0]
+
+def add_frequencia():
+    nome = input("Digite o nome do aluno: ")
+
+    if nome in alunos:
+        carga_horaria = int(input("Digite a carga horária da disciplina: "))
+        alunos[nome][7] = carga_horaria
+        frequencia = int(input("Digite a frequência a ser adicionada: "))
+        alunos[nome][1] += frequencia
+        print(f"Frequência atualizada para {alunos[nome][1]} aulas.")
+    else:
+        print("Aluno não encontrado.")
+
+def add_nota():
+    nome = input("Digite o nome do aluno para adicionar notas: ")
+    if nome in alunos:
+        for i in range(4):
+            nota = float(input(f"Digite a nota {i + 1} (ou -1 para sair): "))
+            if nota == -1:
+                break
+            alunos[nome][3 + i] = nota
+        print("Notas adicionadas com sucesso!")
+    else:
+        print("Aluno não encontrado.")
+
+def situacao(aluno):
+    frequencia = aluno[1]
+    notas = aluno[3:7]
+    carga_horaria = aluno[7]
+
+    if len(notas) > 0:
+        media = sum(notas) / len(notas)
+    else:
+        media = 0
+
+    aluno[0] = media
+
+    if carga_horaria > 0:
+        percentual_presenca = (frequencia / carga_horaria) * 100
+
+        if percentual_presenca < 75:
+            aluno[2] = "Reprovado por Falta"
+        elif media < 7:
+            aluno[2] = "Reprovado por Nota"
+        else:
+            aluno[2] = "Aprovado"
+    else:
+        print("Carga horária não informada.")
+
+def editar_nome():
+    aluno_antigo = input("Digite o nome do aluno que deseja editar: ")
+    if aluno_antigo in alunos:
+        novo_nome = input("Digite o novo nome do aluno: ")
+        dados = alunos.pop(aluno_antigo)
+        alunos[novo_nome] = dados
+
+        print("Nome alterado com sucesso!")
+    else:
+        print("Aluno não encontrado.")
+
+def excluir_aluno():
+    aluno_para_excluir = input("Digite o nome do aluno que deseja excluir: ")
+    if aluno_para_excluir in alunos:
+        del alunos[aluno_para_excluir]
+        print("Aluno excluído com sucesso!")
+    else:
+        print("Aluno não encontrado.")
+
+def relatorio_filtrado(situacao_filtro):
+    for nome, info in alunos.items():
+        situacao(info)
+        if info[2] == situacao_filtro:
+            print(f"{nome} - média: {info[0]:.2f} / frequência: {info[1]} aulas - ({info[2]})")
+
+def menu_filtro():
+    print("Filtrar Alunos:")
+    print("1. Reprovados por Falta")
+    print("2. Reprovados por Nota")
+    print("3. Aprovados")
+    opcao = input("Escolha uma opção: ")
+
+    if opcao == '1':
+        relatorio_filtrado("Reprovado por Falta")
+    elif opcao == '2':
+        relatorio_filtrado("Reprovado por Nota")
+    elif opcao == '3':
+        relatorio_filtrado("Aprovado")
+    else:
+        print("Opção inválida!")
+
+def relatorio_especifico():
+    nome = input("Digite o nome do aluno que você deseja analisar: ")
+    if nome in alunos:
+        aluno_info = alunos[nome]
+        situacao(aluno_info)
+        print(f"{nome} - média: {aluno_info[0]:.2f} / frequência: {aluno_info[1]} aulas - ({aluno_info[2]})")
+    else:
+        print("Aluno não encontrado.")
+
+def relatorio_geral():
+    if not alunos:
+        print("Nenhum aluno cadastrado.")
+        return
+
+    for nome, info in alunos.items():
+        situacao(info)
+        print(f"{nome} - média: {info[0]:.2f} / frequência: {info[1]} aulas - ({info[2]})")
+
+while True:
+    print("\nMenu:")
+    print("1. Adicionar Aluno")
+    print("2. Editar Nome do Aluno")
+    print("3. Remover Aluno")
+    print("4. Adicionar Notas")
+    print("5. Adicionar Frequência")
+    print("6. Imprimir Relatório Geral")
+    print("7. Imprimir Relatório Filtrado")
+    print("8. Imprimir Relatório de Aluno Específico")
+    print("0. Sair")
+
+    opcao = input("Escolha uma opção: ")
+
+    if opcao == '1':
+        add_aluno()
+    elif opcao == '2':
+        editar_nome()
+    elif opcao == '3':
+        excluir_aluno()
+    elif opcao == '4':
+        add_nota()
+    elif opcao == '5':
+        add_frequencia()
+    elif opcao == '6':
+        relatorio_geral()
+    elif opcao == '7':
+        menu_filtro()
+    elif opcao == '8':
+        relatorio_especifico()
+    elif opcao == '0':
+        break
+    else:
+        print("Opção inválida! Tente novamente.")
+
+
